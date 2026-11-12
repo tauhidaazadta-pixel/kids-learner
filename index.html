@@ -1,359 +1,1327 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kids Smart Learning & Animal Sounds App</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
-            user-select: none;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8e9">
+  <title>Little Learners — Kids Learning App</title>
+  <style>
+    :root {
+      --ink: #1e2a47;
+      --muted: #6b7894;
+      --paper: #fffdf8;
+      --bg: #fff8e9;
+      --purple: #7657e8;
+      --purple-dark: #5c41c5;
+      --shadow: 0 12px 30px rgba(58, 51, 92, 0.11);
+      --shadow-lg: 0 22px 45px rgba(58, 51, 92, 0.18);
+      --round: "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
+    }
 
-        body {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
-            min-height: 100vh;
-            padding: 15px;
-            text-align: center;
-        }
+    * { box-sizing: border-box; }
 
-        header {
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            max-width: 1000px;
-            margin: 0 auto 20px auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--round);
+      background:
+        radial-gradient(circle at 6% 8%, #ffe9ab 0 5%, transparent 5.4%),
+        radial-gradient(circle at 93% 15%, #dff5ff 0 6%, transparent 6.4%),
+        radial-gradient(circle at 88% 88%, #ffe0ed 0 7%, transparent 7.4%),
+        radial-gradient(circle at 12% 92%, #e0ffe0 0 6%, transparent 6.4%),
+        var(--bg);
+      overflow-x: hidden;
+    }
 
-        header h1 {
-            color: #ff4757;
-            font-size: 1.8rem;
-            margin: 0 auto;
-        }
+    /* floating background decorations */
+    .floaters {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .floaters span {
+      position: absolute;
+      font-size: clamp(1.4rem, 3vw, 2.4rem);
+      opacity: .16;
+      animation: floaty 18s ease-in-out infinite;
+    }
+    .floaters span:nth-child(1) { left: 3%; top: 12%; animation-delay: 0s; }
+    .floaters span:nth-child(2) { right: 5%; top: 22%; animation-delay: -3s; }
+    .floaters span:nth-child(3) { left: 8%; top: 62%; animation-delay: -6s; }
+    .floaters span:nth-child(4) { right: 9%; top: 72%; animation-delay: -9s; }
+    .floaters span:nth-child(5) { left: 45%; top: 5%; animation-delay: -12s; }
+    .floaters span:nth-child(6) { right: 35%; top: 88%; animation-delay: -15s; }
+    .floaters span:nth-child(7) { left: 25%; top: 35%; animation-delay: -4s; }
+    .floaters span:nth-child(8) { right: 20%; top: 50%; animation-delay: -8s; }
 
-        #back-btn {
-            display: none;
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #c0392b;
-        }
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-22px) rotate(10deg); }
+    }
 
-        #back-btn:active {
-            transform: translateY(4px);
-            box-shadow: none;
-        }
+    button { font: inherit; }
 
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 18px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+    .app {
+      position: relative;
+      z-index: 1;
+      width: min(1160px, 100%);
+      margin: 0 auto;
+      padding: 22px 22px 48px;
+    }
 
-        .category-card {
-            background: white;
-            border-radius: 22px;
-            padding: 25px 15px;
-            cursor: pointer;
-            box-shadow: 0 8px 0 rgba(0,0,0,0.12);
-            transition: transform 0.15s;
-            border: 4px solid #fff;
-        }
+    /* ---------- TOP BAR ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 25px;
+    }
 
-        .category-card:hover {
-            transform: translateY(-5px);
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: clamp(1.2rem, 3vw, 1.7rem);
+      letter-spacing: -0.6px;
+    }
 
-        .cat-icon {
-            font-size: 4rem;
-            margin-bottom: 10px;
-        }
+    .brand-mark {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      place-items: center;
+      border-radius: 17px;
+      background: linear-gradient(135deg, #ffe28a, #ffb84d);
+      box-shadow: 0 6px 0 #f1a72a, 0 8px 20px rgba(241, 167, 42, .35);
+      font-size: 1.85rem;
+      animation: wobble 4s ease-in-out infinite;
+    }
 
-        .cat-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2f3542;
-        }
+    @keyframes wobble {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+    }
 
-        #learning-screen {
-            display: none;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+    .topbar-actions { display: flex; align-items: center; gap: 10px; }
 
-        #spotlight-box {
-            background: white;
-            border: 6px solid #ffa502;
-            border-radius: 25px;
-            max-width: 380px;
-            margin: 0 auto 20px auto;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+    .icon-button {
+      display: grid;
+      width: 50px;
+      height: 50px;
+      place-items: center;
+      border: 0;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #fff, #f3f0ff);
+      color: var(--ink);
+      box-shadow: 0 5px 0 #e3ddf6;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+    }
+    .icon-button:active { transform: translateY(3px); box-shadow: 0 2px 0 #e3ddf6; }
+    .icon-button[aria-pressed="false"] { opacity: .55; }
 
-        .pop {
-            transform: scale(1.08);
-        }
+    .nav-button {
+      border: 0;
+      border-radius: 16px;
+      padding: 13px 20px;
+      color: white;
+      background: linear-gradient(135deg, #8b6cf6, #6b4ae0);
+      box-shadow: 0 5px 0 var(--purple-dark);
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+    .nav-button:hover { transform: translateY(-2px); }
+    .nav-button:active {
+      transform: translateY(3px) scale(.98);
+      box-shadow: 0 2px 0 var(--purple-dark);
+    }
+    .nav-button:disabled { opacity: .48; cursor: default; transform: none; }
 
-        #spot-top {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: #ff4757;
-        }
+    /* ---------- HOME ---------- */
+    .intro { margin: 16px 0 24px; text-align: center; }
 
-        #spot-icon {
-            font-size: 6rem;
-            margin: 5px 0;
-        }
+    .intro h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2.1rem, 5.5vw, 3.5rem);
+      line-height: 1.1;
+      letter-spacing: -1.8px;
+      background: linear-gradient(120deg, #7657e8 0%, #e15b9c 50%, #ff9f43 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
 
-        #spot-name {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #1e90ff;
-        }
+    .intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.08rem;
+      font-weight: 700;
+    }
 
-        .items-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-            gap: 12px;
-        }
+    .total-progress {
+      display: inline-block;
+      margin-top: 14px !important;
+      padding: 9px 20px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, #fff, #f3f0ff);
+      box-shadow: var(--shadow);
+      color: #5c41c5 !important;
+      font-size: .93rem !important;
+      font-weight: 900 !important;
+      border: 2px solid #e8e2ff;
+    }
 
-        .item-btn {
-            background: white;
-            border: none;
-            border-radius: 18px;
-            padding: 15px 8px;
-            cursor: pointer;
-            box-shadow: 0 5px 0 #ced6e0;
-            transition: all 0.1s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 18px;
+    }
 
-        .item-btn:active, .item-btn.active {
-            transform: translateY(5px);
-            box-shadow: none;
-            background: #fff200;
-        }
+    .category-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 208px;
+      padding: 20px 13px 15px;
+      border: 0;
+      border-radius: 26px;
+      color: var(--ink);
+      background: linear-gradient(150deg, var(--c1), var(--c2));
+      box-shadow: 0 8px 0 var(--c3), 0 14px 26px rgba(58, 51, 92, .14);
+      cursor: pointer;
+      text-align: center;
+      transition: transform 200ms cubic-bezier(.2,1.4,.5,1), box-shadow 200ms ease;
+    }
 
-        .item-icon {
-            font-size: 2.8rem;
-        }
+    .category-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 15%, rgba(255,255,255,.75) 0, transparent 55%);
+      pointer-events: none;
+    }
 
-        .item-label {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #2f3542;
-            margin-top: 5px;
-        }
-    </style>
+    .category-card::after {
+      content: "";
+      position: absolute;
+      left: -30%;
+      bottom: -60%;
+      width: 140%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.5) 0, transparent 65%);
+      pointer-events: none;
+    }
+
+    .category-card:hover {
+      transform: translateY(-7px) rotate(-1.2deg) scale(1.02);
+      box-shadow: 0 13px 0 var(--c3), var(--shadow-lg);
+    }
+    .category-card:active { transform: translateY(-2px) scale(.98); }
+
+    .category-icon {
+      position: relative;
+      display: block;
+      margin-bottom: 11px;
+      font-size: 3.3rem;
+      line-height: 1.1;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,.12));
+      transition: transform 250ms cubic-bezier(.2,1.6,.5,1);
+    }
+    .category-card:hover .category-icon { transform: scale(1.15) rotate(-6deg); }
+
+    .category-name {
+      position: relative;
+      display: block;
+      font-size: 1.02rem;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+
+    .category-subtitle {
+      position: relative;
+      display: block;
+      margin-top: 3px;
+      color: rgba(30,42,71,.72);
+      font-size: .79rem;
+      font-weight: 800;
+    }
+
+    .category-progress {
+      position: relative;
+      display: block;
+      width: 80%;
+      height: 8px;
+      margin: 13px auto 0;
+      border-radius: 99px;
+      background: rgba(255,255,255,.7);
+      overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,.08);
+    }
+    .category-progress i {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #a78bfa, #7657e8);
+      transition: width 500ms cubic-bezier(.2,1.4,.5,1);
+    }
+    .category-progress-text {
+      position: relative;
+      display: block;
+      margin-top: 7px;
+      color: rgba(30,42,71,.8);
+      font-size: .73rem;
+      font-weight: 900;
+    }
+
+    /* ---------- LEARN VIEW ---------- */
+    .learning-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 26px 0 16px;
+    }
+
+    .learning-heading h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      letter-spacing: -1px;
+    }
+
+    .keyboard-hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: .86rem;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .spotlight {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(120px, 190px) 1fr;
+      align-items: center;
+      gap: clamp(18px, 5vw, 44px);
+      width: 100%;
+      min-height: 240px;
+      padding: clamp(22px, 5vw, 40px);
+      border: 3px solid #fff;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at 90% 10%, rgba(255,255,255,.9) 0, transparent 45%),
+        linear-gradient(135deg, #fff 0%, #f1edff 55%, #ffe9f4 100%);
+      box-shadow: var(--shadow-lg);
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+      user-select: none;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      overflow: hidden;
+    }
+    .spotlight:hover { box-shadow: 0 26px 50px rgba(58, 51, 92, .22); }
+    .spotlight:active { transform: scale(.995); }
+
+    .spotlight-art {
+      position: relative;
+      display: grid;
+      width: clamp(120px, 25vw, 180px);
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 34px;
+      background: linear-gradient(145deg, #fff, #f7f3ff);
+      box-shadow: inset 0 0 0 3px #eee9ff, 0 10px 22px rgba(62, 49, 112, .12);
+      font-size: clamp(4.2rem, 12vw, 7.4rem);
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.08));
+    }
+
+    .spotlight-art .color-dot {
+      width: 58%;
+      height: 58%;
+      border-radius: 50%;
+      background: var(--swatch);
+      box-shadow: inset -9px -9px 0 rgba(0,0,0,.08), 0 6px 14px rgba(0,0,0,.15);
+    }
+
+    .spotlight-copy small {
+      display: inline-block;
+      margin-bottom: 9px;
+      padding: 6px 13px;
+      border-radius: 99px;
+      color: #5c41c5;
+      background: linear-gradient(135deg, #e8e2ff, #f6d9ff);
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .spotlight-copy h2 {
+      margin: 0 0 5px;
+      font-size: clamp(2.1rem, 7vw, 3.6rem);
+      line-height: 1;
+      letter-spacing: -1.5px;
+      background: linear-gradient(120deg, #1e2a47, #5c41c5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .spotlight-copy p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.8vw, 1.2rem);
+      font-weight: 700;
+    }
+
+    .spotlight-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .sound-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 99px;
+      background: linear-gradient(135deg, #a78bfa, #7657e8);
+      color: #fff;
+      font-weight: 900;
+      font-size: .94rem;
+      box-shadow: 0 5px 0 var(--purple-dark), 0 8px 18px rgba(118,87,232,.35);
+      cursor: pointer;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .sound-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 var(--purple-dark);
+      animation: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .sound-text {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--purple-dark);
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: rgba(232, 226, 255, .6);
+    }
+
+    .spotlight.pop .spotlight-art {
+      animation: pop 440ms cubic-bezier(.2, 1.5, .5, 1);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(.72) rotate(-10deg); }
+      65% { transform: scale(1.14) rotate(5deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    /* ---------- ITEM GRID ---------- */
+    .items-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 32px 2px 14px;
+    }
+
+    .items-title h2 {
+      margin: 0;
+      font-size: 1.32rem;
+      letter-spacing: -0.4px;
+    }
+
+    .items-title-right { display: flex; align-items: center; gap: 10px; }
+
+    .items-title span {
+      color: var(--muted);
+      font-size: .87rem;
+      font-weight: 700;
+    }
+
+    .mini-button {
+      border: 0;
+      border-radius: 13px;
+      padding: 9px 15px;
+      background: linear-gradient(135deg, #fff, #f3f0ff);
+      color: var(--ink);
+      font-weight: 900;
+      font-size: .84rem;
+      box-shadow: 0 4px 0 #e7e1f7;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .mini-button:hover { transform: translateY(-2px); }
+    .mini-button:active { transform: translateY(2px); box-shadow: 0 1px 0 #e7e1f7; }
+
+    .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 13px;
+    }
+
+    .item-card {
+      position: relative;
+      min-height: 124px;
+      padding: 13px 9px;
+      border: 3px solid transparent;
+      border-radius: 22px;
+      background: linear-gradient(150deg, #fff, var(--c1, #f3f0ff));
+      box-shadow: 0 6px 0 rgba(58, 51, 92, .06), 0 8px 18px rgba(58, 51, 92, .08);
+      color: var(--ink);
+      cursor: pointer;
+      text-align: center;
+      transition: transform 180ms cubic-bezier(.2,1.4,.5,1), box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .item-card:hover {
+      transform: translateY(-5px) rotate(-1.5deg) scale(1.03);
+      box-shadow: 0 10px 0 rgba(58, 51, 92, .08), var(--shadow-lg);
+    }
+
+    .item-card.selected {
+      border-color: var(--purple);
+      background: linear-gradient(150deg, #f3f0ff, #e8e2ff);
+      box-shadow: 0 8px 0 #c4b5fd, 0 12px 26px rgba(118, 87, 232, .28);
+      transform: translateY(-4px) scale(1.04);
+    }
+
+    .learned-badge {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      font-size: .85rem;
+      opacity: 0;
+      transform: scale(.3) rotate(-45deg);
+      transition: opacity 250ms ease, transform 350ms cubic-bezier(.2,1.8,.5,1);
+    }
+    .item-card.learned .learned-badge {
+      opacity: 1;
+      transform: scale(1) rotate(0);
+    }
+
+    .item-icon {
+      display: grid;
+      height: 56px;
+      place-items: center;
+      margin-bottom: 7px;
+      font-size: 2.5rem;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,.1));
+      transition: transform 200ms cubic-bezier(.2,1.6,.5,1);
+    }
+    .item-card:hover .item-icon { transform: scale(1.12) rotate(4deg); }
+
+    .item-icon .color-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--swatch);
+      box-shadow: inset -5px -5px 0 rgba(0,0,0,.1), 0 3px 6px rgba(0,0,0,.1);
+    }
+
+    .item-label { display: block; font-size: .93rem; font-weight: 900; }
+
+    .item-sub {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 800;
+    }
+
+    .footer-note {
+      margin: 30px 0 0;
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    [hidden] { display: none !important; }
+
+    button:focus-visible, .spotlight:focus-visible {
+      outline: 4px solid #ffbd4a;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 560px) {
+      .app { padding: 15px 14px 34px; }
+      .topbar { margin-bottom: 18px; }
+      .brand-mark { width: 44px; height: 44px; font-size: 1.6rem; }
+      .icon-button { width: 44px; height: 44px; }
+      .nav-button { padding: 10px 13px; font-size: .92rem; }
+      .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+      .category-card { min-height: 188px; padding: 15px 8px 12px; }
+      .category-icon { font-size: 2.7rem; }
+      .learning-heading { align-items: start; flex-direction: column; }
+      .keyboard-hint { text-align: left; }
+      .spotlight {
+        grid-template-columns: 100px 1fr;
+        min-height: 170px;
+        gap: 15px;
+        padding: 17px;
+        border-radius: 24px;
+      }
+      .spotlight-art { width: 100px; border-radius: 24px; }
+      .spotlight-copy h2 { font-size: 2rem; }
+      .spotlight-copy p { font-size: .95rem; }
+      .sound-btn { padding: 10px 15px; font-size: .86rem; }
+      .item-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+      .item-card { min-height: 110px; padding: 10px 5px; }
+      .item-icon { font-size: 2.1rem; height: 46px; }
+      .item-label { font-size: .84rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="floaters" aria-hidden="true">
+    <span>⭐</span><span>🌈</span><span>✨</span><span>🎈</span>
+    <span>🌙</span><span>☀️</span><span>🦋</span><span>🌸</span>
+  </div>
 
-    <header>
-        <button id="back-btn" onclick="goHome()">⬅ वापस (Home)</button>
-        <h1 id="page-title">🦁 बच्चों की जादुई पाठशाला 🎵</h1>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">🌈</span> Little Learners</div>
+      <div class="topbar-actions">
+        <button id="soundToggle" class="icon-button" type="button" aria-pressed="true" title="आवाज़ चालू / बंद">🔊</button>
+        <button id="homeButton" class="nav-button" type="button" disabled>🏠 Home / वापस</button>
+      </div>
     </header>
 
-    <div id="home-screen" class="grid-container"></div>
+    <section id="homeView">
+      <div class="intro">
+        <h1>चलो सीखें! <span aria-hidden="true">✨</span></h1>
+        <p>अपना पसंदीदा विषय चुनें और सीखना शुरू करें।</p>
+        <p id="totalProgress" class="total-progress"></p>
+      </div>
+      <div id="categoryGrid" class="category-grid" aria-label="Learning categories"></div>
+    </section>
 
-    <div id="learning-screen">
-        <div id="spotlight-box" onclick="repeatAction()">
-            <div id="spot-top">A</div>
-            <div id="spot-icon">🍎</div>
-            <div id="spot-name">Apple</div>
+    <section id="learnView" hidden>
+      <div class="learning-heading">
+        <h1 id="categoryTitle"></h1>
+        <p class="keyboard-hint">⌨️ A–Z अक्षर • 1–9 आइटम • S आवाज़ • R रैंडम • Esc वापस</p>
+      </div>
+
+      <div id="spotlight" class="spotlight" role="button" tabindex="0" aria-label="Repeat pronunciation">
+        <div id="spotlightArt" class="spotlight-art" aria-hidden="true"></div>
+        <div class="spotlight-copy">
+          <small id="spotlightTag"></small>
+          <h2 id="spotlightName"></h2>
+          <p id="spotlightDetail"></p>
+          <div class="spotlight-actions">
+            <button id="soundButton" class="sound-btn" type="button" hidden>🔊 आवाज़ सुनें</button>
+            <span id="spotlightSoundText" class="sound-text"></span>
+          </div>
         </div>
-        <div id="items-container" class="items-grid"></div>
-    </div>
+      </div>
 
-    <script>
-        const categories = [
-            {
-                id: "wild",
-                title: "जंगली जानवर (Wild Animals & Roars)",
-                icon: "🦁",
-                color: "#fadbd8",
-                items: [
-                    { icon: "🦁", name: "Lion", soundText: "Lion roars! Grrr!", audioUrl: "https://actions.google.com/sounds/v1/animals/lion_roar.ogg" },
-                    { icon: "🐯", name: "Tiger", soundText: "Tiger roar! Roar!", audioUrl: "https://actions.google.com/sounds/v1/animals/tiger_roar.ogg" },
-                    { icon: "🐘", name: "Elephant", soundText: "Elephant trumpet!", audioUrl: "https://actions.google.com/sounds/v1/animals/elephant_call.ogg" },
-                    { icon: "🐺", name: "Wolf", soundText: "Wolf howling!", audioUrl: "https://actions.google.com/sounds/v1/animals/wolf_howling.ogg" },
-                    { icon: "🐻", name: "Bear", soundText: "Bear growl!", audioUrl: "https://actions.google.com/sounds/v1/animals/bear_groan.ogg" },
-                    { icon: "🐵", name: "Monkey", soundText: "Monkey chatter!", audioUrl: "https://actions.google.com/sounds/v1/animals/monkey_chatter.ogg" }
-                ]
-            },
-            {
-                id: "domestic",
-                title: "पालतू जानवर (Domestic Animals)",
-                icon: "🐄",
-                color: "#fcf3cf",
-                items: [
-                    { icon: "🐶", name: "Dog", soundText: "Dog says Woof Woof!", audioUrl: "https://actions.google.com/sounds/v1/animals/dog_barking.ogg" },
-                    { icon: "🐱", name: "Cat", soundText: "Cat says Meow Meow!", audioUrl: "https://actions.google.com/sounds/v1/animals/cat_meow.ogg" },
-                    { icon: "🐄", name: "Cow", soundText: "Cow says Moo Moo!", audioUrl: "https://actions.google.com/sounds/v1/animals/cow_mooing.ogg" },
-                    { icon: "🐐", name: "Goat", soundText: "Goat says Bleat!", audioUrl: "https://actions.google.com/sounds/v1/animals/goat_bleating.ogg" },
-                    { icon: "🐴", name: "Horse", soundText: "Horse neighs!", audioUrl: "https://actions.google.com/sounds/v1/animals/horse_whinny.ogg" },
-                    { icon: "🐓", name: "Rooster", soundText: "Rooster says Cock-a-doodle-doo!", audioUrl: "https://actions.google.com/sounds/v1/animals/rooster_crowing.ogg" }
-                ]
-            },
-            {
-                id: "abcd",
-                title: "ABCD (अक्षर)",
-                icon: "🔤",
-                color: "#ffcccc",
-                items: [
-                    { key: "A", icon: "🍎", name: "Apple", soundText: "A for Apple" },
-                    { key: "B", icon: "⚽", name: "Ball", soundText: "B for Ball" },
-                    { key: "C", icon: "🐱", name: "Cat", soundText: "C for Cat" },
-                    { key: "D", icon: "🐶", name: "Dog", soundText: "D for Dog" },
-                    { key: "E", icon: "🐘", name: "Elephant", soundText: "E for Elephant" },
-                    { key: "F", icon: "🐟", name: "Fish", soundText: "F for Fish" }
-                ]
-            },
-            {
-                id: "fruits",
-                title: "फल (Fruits)",
-                icon: "🍎",
-                color: "#ebdef0",
-                items: [
-                    { icon: "🍎", name: "Apple", soundText: "Apple" },
-                    { icon: "🍌", name: "Banana", soundText: "Banana" },
-                    { icon: "🥭", name: "Mango", soundText: "Mango" },
-                    { icon: "🍊", name: "Orange", soundText: "Orange" },
-                    { icon: "🍇", name: "Grapes", soundText: "Grapes" },
-                    { icon: "🍉", name: "Watermelon", soundText: "Watermelon" }
-                ]
-            }
-        ];
+      <div class="items-title">
+        <h2>आइए, चुनकर सीखें!</h2>
+        <div class="items-title-right">
+          <span id="itemCount"></span>
+          <button id="randomButton" class="mini-button" type="button">🎲 रैंडम</button>
+        </div>
+      </div>
+      <div id="itemGrid" class="item-grid" aria-label="Items in this category"></div>
+    </section>
 
-        let activeCategory = null;
-        let lastItem = null;
+    <p class="footer-note">🌟 सीखना मज़ेदार है — हर दिन कुछ नया सीखें! 🌟</p>
+  </main>
 
-        const homeScreen = document.getElementById("home-screen");
-        const learningScreen = document.getElementById("learning-screen");
-        const itemsContainer = document.getElementById("items-container");
-        const backBtn = document.getElementById("back-btn");
-        const pageTitle = document.getElementById("page-title");
+  <script>
+    /* =========================================================
+       1. HELPERS
+       ========================================================= */
+    const plainItems = rows => rows.map(([tag, name, detail, icon, swatch]) => ({
+      tag, name, detail, icon, swatch, spoken: detail
+    }));
 
-        function renderHome() {
-            homeScreen.innerHTML = "";
-            categories.forEach(cat => {
-                const card = document.createElement("div");
-                card.className = "category-card";
-                card.style.backgroundColor = cat.color;
-                card.innerHTML = `
-                    <div class="cat-icon">${cat.icon}</div>
-                    <div class="cat-title">${cat.title}</div>
-                `;
-                card.onclick = () => openCategory(cat);
-                homeScreen.appendChild(card);
-            });
+    const soundItems = rows => rows.map(([name, detail, icon, snd, sound]) => ({
+      tag: icon, name, detail, icon, snd, sound,
+      spoken: name + ". " + detail
+    }));
+
+    /* =========================================================
+       2. CATEGORY DATA  (pets/wild/birds/insects = 20 each)
+       ========================================================= */
+    const categories = [
+      {
+        id: "letters", title: "ABCD", subtitle: "अक्षर • Letters", icon: "🔤",
+        grad: ["#ffe4f0", "#ffc2dc", "#ff9ec4"],
+        items: plainItems([
+          ["A", "Apple", "A for Apple", "🍎"], ["B", "Ball", "B for Ball", "⚽"],
+          ["C", "Cat", "C for Cat", "🐱"], ["D", "Dog", "D for Dog", "🐶"],
+          ["E", "Elephant", "E for Elephant", "🐘"], ["F", "Fish", "F for Fish", "🐟"],
+          ["G", "Grapes", "G for Grapes", "🍇"], ["H", "Hat", "H for Hat", "🎩"],
+          ["I", "Ice Cream", "I for Ice Cream", "🍦"], ["J", "Juice", "J for Juice", "🧃"],
+          ["K", "Kite", "K for Kite", "🪁"], ["L", "Lion", "L for Lion", "🦁"],
+          ["M", "Moon", "M for Moon", "🌙"], ["N", "Nest", "N for Nest", "🪺"],
+          ["O", "Orange", "O for Orange", "🍊"], ["P", "Penguin", "P for Penguin", "🐧"],
+          ["Q", "Queen", "Q for Queen", "👑"], ["R", "Rabbit", "R for Rabbit", "🐰"],
+          ["S", "Sun", "S for Sun", "☀️"], ["T", "Tiger", "T for Tiger", "🐯"],
+          ["U", "Umbrella", "U for Umbrella", "☂️"], ["V", "Violin", "V for Violin", "🎻"],
+          ["W", "Whale", "W for Whale", "🐳"], ["X", "Xylophone", "X for Xylophone", "🎼"],
+          ["Y", "Yo-yo", "Y for Yo-yo", "🪀"], ["Z", "Zebra", "Z for Zebra", "🦓"]
+        ])
+      },
+      {
+        id: "numbers", title: "123", subtitle: "गिनती • Counting", icon: "🔢",
+        grad: ["#d4f0ff", "#a8dcff", "#7cc4ff"],
+        items: plainItems([
+          ["1", "One", "1 — One", "☝️"], ["2", "Two", "2 — Two", "✌️"],
+          ["3", "Three", "3 — Three", "🤟"], ["4", "Four", "4 — Four", "🍀"],
+          ["5", "Five", "5 — Five", "🖐️"], ["6", "Six", "6 — Six", "🎲"],
+          ["7", "Seven", "7 — Seven", "🌈"], ["8", "Eight", "8 — Eight", "🐙"],
+          ["9", "Nine", "9 — Nine", "🎈"], ["10", "Ten", "10 — Ten", "🔟"],
+          ["11", "Eleven", "11 — Eleven", "⭐"], ["12", "Twelve", "12 — Twelve", "🥚"],
+          ["13", "Thirteen", "13 — Thirteen", "🦋"], ["14", "Fourteen", "14 — Fourteen", "🌷"],
+          ["15", "Fifteen", "15 — Fifteen", "🍓"], ["16", "Sixteen", "16 — Sixteen", "🎨"],
+          ["17", "Seventeen", "17 — Seventeen", "🐞"], ["18", "Eighteen", "18 — Eighteen", "🌼"],
+          ["19", "Nineteen", "19 — Nineteen", "🧸"], ["20", "Twenty", "20 — Twenty", "🎉"]
+        ])
+      },
+      /* ---------------- 20 PETS ---------------- */
+      {
+        id: "pets", title: "Domestic Animals", subtitle: "पालतू जानवर", icon: "🐕",
+        grad: ["#d9f7c4", "#a8e894", "#7cdc60"],
+        items: soundItems([
+          ["Dog", "A friendly pet that says woof!", "🐶", "bark", "Woof woof!"],
+          ["Cat", "A soft pet that says meow!", "🐱", "meow", "Meow!"],
+          ["Cow", "A farm animal that gives us milk.", "🐮", "moo", "Mooooo!"],
+          ["Goat", "A lively animal that likes to nibble.", "🐐", "bleat", "Maa maa!"],
+          ["Sheep", "A fluffy animal with soft wool.", "🐑", "baa", "Baa baa!"],
+          ["Horse", "A strong animal that can run fast.", "🐴", "neigh", "Neigh!"],
+          ["Rabbit", "A small animal with long ears.", "🐰", "squeak", "Squeak squeak!"],
+          ["Hamster", "A tiny, furry pet.", "🐹", "squeak", "Squeak!"],
+          ["Turtle", "A gentle pet with a hard shell.", "🐢", "hiss", "Hssss..."],
+          ["Goldfish", "A little fish that swims in water.", "🐟", "blub", "Blub blub!"],
+          ["Guinea Pig", "A cute, chubby little pet.", "🐭", "squeak", "Wheek wheek!"],
+          ["Donkey", "A patient animal with long ears.", "🫏", "heehaw", "Hee-haw!"],
+          ["Pig", "A pink farm animal that loves mud.", "🐷", "oink", "Oink oink!"],
+          ["Duck", "A bird that likes to swim in ponds.", "🦆", "quack", "Quack quack!"],
+          ["Hen", "A farm bird that lays eggs.", "🐔", "cluck", "Cluck cluck!"],
+          ["Pigeon", "A gentle bird that coos softly.", "🕊️", "coo", "Coo coo!"],
+          ["Parrot", "A colorful pet bird that can talk.", "🦜", "squawk", "Squawk!"],
+          ["Ferret", "A playful, wriggly little pet.", "🦡", "squeak", "Dook dook!"],
+          ["Canary", "A tiny yellow bird that sings sweetly.", "🐤", "chirp", "Chirp chirp!"],
+          ["Bull", "A strong farm animal with horns.", "🐂", "moo", "Moooo!"]
+        ])
+      },
+      /* ---------------- 20 WILD ANIMALS ---------------- */
+      {
+        id: "wild", title: "Wild Animals", subtitle: "जंगली जानवर", icon: "🦁",
+        grad: ["#ffe4c4", "#ffc78a", "#ffa84c"],
+        items: soundItems([
+          ["Lion", "The lion is known as the king of the jungle.", "🦁", "roar", "Roooaaar!"],
+          ["Tiger", "A big cat with beautiful stripes.", "🐯", "growl", "Grrrrr!"],
+          ["Elephant", "A huge animal with a long trunk.", "🐘", "trumpet", "Paaawhoo!"],
+          ["Giraffe", "The tallest animal, with a long neck.", "🦒", "hum", "Mmmmm..."],
+          ["Monkey", "A playful animal that loves to climb.", "🐒", "monkey", "Ooh ooh ah ah!"],
+          ["Zebra", "A wild animal with black and white stripes.", "🦓", "heehaw", "Hee-haw!"],
+          ["Bear", "A strong, furry animal.", "🐻", "growl", "Grrrrr!"],
+          ["Fox", "A clever animal with a bushy tail.", "🦊", "yip", "Yip yip!"],
+          ["Crocodile", "A reptile that lives near water.", "🐊", "snap", "Snap snap!"],
+          ["Hippopotamus", "A large animal that likes the water.", "🦛", "grumble", "Grumble grumble!"],
+          ["Wolf", "A wild animal that howls at the moon.", "🐺", "howl", "Awooooo!"],
+          ["Deer", "A gentle animal with antlers.", "🦌", "bugle", "Bleurgh!"],
+          ["Kangaroo", "A hopping animal with a pouch.", "🦘", "boing", "Boing boing!"],
+          ["Panda", "A black and white bear that loves bamboo.", "🐼", "bleat", "Squeak!"],
+          ["Rhinoceros", "A big animal with a horn on its nose.", "🦏", "snort", "Snort!"],
+          ["Cheetah", "The fastest land animal.", "🐆", "purr", "Purrrr!"],
+          ["Bison", "A large, shaggy wild animal.", "🦬", "grumble", "Grumble!"],
+          ["Gorilla", "A strong, smart ape.", "🦍", "grunt", "Grr-unt!"],
+          ["Snake", "A long, slithering reptile.", "🐍", "ssss", "Sssssss!"],
+          ["Camel", "A desert animal with a hump.", "🐪", "grumble", "Grumble grumble!"]
+        ])
+      },
+      /* ---------------- 20 BIRDS ---------------- */
+      {
+        id: "birds", title: "Birds", subtitle: "पक्षी", icon: "🐦",
+        grad: ["#c4f0ff", "#8ad4ff", "#5cb8ff"],
+        items: soundItems([
+          ["Bird", "Birds have feathers and wings.", "🐦", "tweet", "Tweet tweet!"],
+          ["Parrot", "A colorful bird that can copy sounds.", "🦜", "squawk", "Squawk!"],
+          ["Peacock", "A beautiful bird with a colorful tail.", "🦚", "peacock", "May-aww!"],
+          ["Duck", "A bird that likes to swim.", "🦆", "quack", "Quack quack!"],
+          ["Owl", "An owl can see very well at night.", "🦉", "hoot", "Hoo hoo!"],
+          ["Eagle", "A strong bird that soars high in the sky.", "🦅", "screech", "Screeee!"],
+          ["Rooster", "A rooster wakes up early and crows.", "🐓", "rooster", "Cock-a-doodle-doo!"],
+          ["Swan", "A graceful bird that swims on lakes.", "🦢", "hiss", "Hssss..."],
+          ["Penguin", "A bird that swims but cannot fly.", "🐧", "honk", "Honk honk!"],
+          ["Flamingo", "A tall, pink bird that stands on one leg.", "🦩", "honk", "Honk!"],
+          ["Sparrow", "A tiny, chirpy little bird.", "🐦", "tweet", "Cheep cheep!"],
+          ["Crow", "A smart black bird with a loud call.", "🐦‍⬛", "caw", "Caw caw!"],
+          ["Pigeon", "A gentle bird that coos softly.", "🕊️", "coo", "Coo coo!"],
+          ["Hummingbird", "A tiny bird that hums as it flies.", "🐦", "hum", "Hummmmm!"],
+          ["Woodpecker", "A bird that pecks on tree trunks.", "🐦", "peck", "Tok tok tok!"],
+          ["Kingfisher", "A bright bird that dives for fish.", "🐦", "chirp", "Chirp!"],
+          ["Ostrich", "The biggest bird, but it cannot fly.", "🦤", "hum", "Boom boom!"],
+          ["Vulture", "A big bird that soars in circles.", "🦅", "screech", "Screeee!"],
+          ["Dove", "A gentle white bird that means peace.", "🕊️", "coo", "Coo coo!"],
+          ["Turkey", "A large bird with a funny gobble.", "🦃", "gobble", "Gobble gobble!"]
+        ])
+      },
+      /* ---------------- 20 INSECTS ---------------- */
+      {
+        id: "insects", title: "Insects", subtitle: "कीड़े-मकोड़े", icon: "🐛",
+        grad: ["#fff3b0", "#ffe066", "#ffc933"],
+        items: soundItems([
+          ["Bee", "Bees buzz around flowers and make honey.", "🐝", "buzz", "Buzzzzz!"],
+          ["Cricket", "Crickets chirp sweetly at night.", "🦗", "chirp", "Chirp chirp!"],
+          ["Mosquito", "Mosquitoes buzz near our ears.", "🦟", "mosquito", "Zzzzzzz!"],
+          ["Fly", "Flies buzz and fly very fast.", "🪰", "buzz", "Bzzz bzzz!"],
+          ["Butterfly", "Butterflies have colorful wings.", "🦋", "flutter", "Flutter flutter!"],
+          ["Ladybug", "Ladybugs are red with black spots.", "🐞", "flutter", "Flutter flutter!"],
+          ["Ant", "Ants are tiny and walk in a line.", "🐜", null, null],
+          ["Caterpillar", "Caterpillars turn into butterflies.", "🐛", null, null],
+          ["Spider", "Spiders spin webs to catch insects.", "🕷️", null, null],
+          ["Snail", "Snails carry their shell and move slowly.", "🐌", null, null],
+          ["Grasshopper", "Grasshoppers leap high in the grass.", "🦗", "chirp", "Chirp chirp!"],
+          ["Beetle", "Beetles have shiny, hard shells.", "🪲", "buzz", "Bzzz!"],
+          ["Moth", "Moths flutter around lights at night.", "🦋", "flutter", "Flutter flutter!"],
+          ["Firefly", "Fireflies glow in the dark.", "✨", "twinkle", "Twinkle twinkle!"],
+          ["Scorpion", "Scorpions have a stinger on their tail.", "🦂", null, null],
+          ["Centipede", "Centipedes have many, many legs.", "🐛", null, null],
+          ["Termite", "Termites chew wood in tiny tunnels.", "🐜", null, null],
+          ["Wasp", "Wasps buzz and can give a sharp sting.", "🐝", "buzz", "Bzzz!"],
+          ["Silkworm", "Silkworms spin soft silk threads.", "🐛", null, null],
+          ["Cicada", "Cicadas sing loudly in the summer.", "🦗", "chirp", "Chirp chirp!"]
+        ])
+      },
+      /* ---------------- FRUITS ---------------- */
+      {
+        id: "fruits", title: "Fruits", subtitle: "फल", icon: "🍓",
+        grad: ["#ffd6dc", "#ffa8b5", "#ff7a8f"],
+        items: soundItems([
+          ["Apple", "A crunchy red or green fruit.", "🍎"],
+          ["Banana", "A soft, sweet fruit with a yellow peel.", "🍌"],
+          ["Orange", "A juicy fruit full of vitamin C.", "🍊"],
+          ["Grapes", "Small, sweet fruits that grow in bunches.", "🍇"],
+          ["Strawberry", "A sweet red fruit with tiny seeds.", "🍓"],
+          ["Watermelon", "A big, juicy fruit with a green rind.", "🍉"],
+          ["Pineapple", "A tropical fruit with a spiky top.", "🍍"],
+          ["Mango", "A sweet tropical fruit, the king of fruits.", "🥭"],
+          ["Pear", "A juicy fruit that is narrow at the top.", "🍐"],
+          ["Cherries", "Small red fruits that grow in pairs.", "🍒"],
+          ["Peach", "A soft, fuzzy fruit with sweet juice.", "🍑"],
+          ["Kiwi", "A small green fruit with tiny black seeds.", "🥝"],
+          ["Papaya", "A soft orange fruit, sweet and healthy.", "🍈"],
+          ["Coconut", "A hard fruit with sweet water inside.", "🥥"],
+          ["Lemon", "A sour yellow fruit full of juice.", "🍋"]
+        ])
+      },
+      /* ---------------- VEGETABLES ---------------- */
+      {
+        id: "vegetables", title: "Vegetables", subtitle: "सब्ज़ियाँ", icon: "🥕",
+        grad: ["#d4f7c4", "#a8e890", "#7cd860"],
+        items: soundItems([
+          ["Carrot", "A crunchy orange vegetable.", "🥕"],
+          ["Broccoli", "A green vegetable that looks like a tiny tree.", "🥦"],
+          ["Tomato", "A juicy red fruit often used as a vegetable.", "🍅"],
+          ["Potato", "A vegetable that grows underground.", "🥔"],
+          ["Corn", "A yellow vegetable with sweet kernels.", "🌽"],
+          ["Cucumber", "A cool, crunchy green vegetable.", "🥒"],
+          ["Onion", "A vegetable that can make you cry.", "🧅"],
+          ["Bell Pepper", "A crunchy vegetable that can be many colors.", "🫑"],
+          ["Eggplant", "A purple vegetable with a green top.", "🍆"],
+          ["Garlic", "A tasty vegetable used to flavor food.", "🧄"],
+          ["Spinach", "A leafy green vegetable full of iron.", "🥬"],
+          ["Pumpkin", "A big orange vegetable for soups.", "🎃"],
+          ["Peas", "Tiny green vegetables in a pod.", "🫛"],
+          ["Radish", "A crunchy red vegetable with a sharp taste.", "🌶️"],
+          ["Ginger", "A spicy root used in cooking.", "🫚"]
+        ])
+      },
+      /* ---------------- VEHICLES ---------------- */
+      {
+        id: "vehicles", title: "Vehicles", subtitle: "वाहन", icon: "🚗",
+        grad: ["#e0d6ff", "#bfa8ff", "#9c7aff"],
+        items: soundItems([
+          ["Car", "A car takes people from place to place.", "🚗", "engine", "Vroom vroom!"],
+          ["Bus", "A bus carries many people at once.", "🚌", "honk", "Honk honk!"],
+          ["Bicycle", "A bicycle has two wheels and pedals.", "🚲", "bell", "Ring ring!"],
+          ["Train", "A train travels on railway tracks.", "🚂", "train", "Choo choo!"],
+          ["Airplane", "An airplane flies high in the sky.", "✈️", "whoosh", "Whooosh!"],
+          ["Helicopter", "A helicopter can fly straight up.", "🚁", "chop", "Chop chop chop!"],
+          ["Ship", "A ship carries people across the water.", "🚢", "shiphorn", "Hoooook!"],
+          ["Taxi", "A taxi takes passengers where they want to go.", "🚕", "beep", "Beep beep!"],
+          ["Tractor", "A tractor helps farmers on the farm.", "🚜", "putt", "Put-put-put!"],
+          ["Fire Engine", "A fire engine helps put out fires.", "🚒", "siren", "Wee-oo wee-oo!"]
+        ])
+      },
+      /* ---------------- COLORS ---------------- */
+      {
+        id: "colors", title: "Colors", subtitle: "रंग", icon: "🎨",
+        grad: ["#ffe9a8", "#ffc4b0", "#c8b0ff"],
+        items: [
+          ["🔴", "Red", "Red is the color of a ripe strawberry.", "🔴", "#ef4444"],
+          ["🟠", "Orange", "Orange is the color of a juicy orange.", "🟠", "#f97316"],
+          ["🟡", "Yellow", "Yellow is the color of the bright sun.", "🟡", "#facc15"],
+          ["🟢", "Green", "Green is the color of fresh grass.", "🟢", "#22c55e"],
+          ["🔵", "Blue", "Blue is the color of the sky.", "🔵", "#3b82f6"],
+          ["🟣", "Purple", "Purple is the color of pretty grapes.", "🟣", "#8b5cf6"],
+          ["🩷", "Pink", "Pink is a soft, cheerful color.", "🩷", "#ec4899"],
+          ["🤎", "Brown", "Brown is the color of a tree trunk.", "🤎", "#92400e"],
+          ["⚫", "Black", "Black is the color of the night sky.", "⚫", "#1f2937"],
+          ["⚪", "White", "White is the color of a fluffy cloud.", "⚪", "#ffffff"]
+        ].map(([tag, name, detail, icon, swatch]) => ({ tag, name, detail, icon, swatch, spoken: name + ". " + detail }))
+      },
+      /* ---------------- BODY PARTS ---------------- */
+      {
+        id: "body", title: "Body Parts", subtitle: "शरीर के अंग", icon: "🖐️",
+        grad: ["#ffdcc4", "#ffc4a8", "#ffa878"],
+        items: soundItems([
+          ["Eyes", "We use our eyes to see the world.", "👀"],
+          ["Ears", "We use our ears to hear sounds.", "👂"],
+          ["Nose", "We use our nose to smell.", "👃"],
+          ["Mouth", "We use our mouth to talk and eat.", "👄"],
+          ["Teeth", "Our teeth help us chew food.", "🦷"],
+          ["Hand", "We use our hands to hold things.", "🖐️"],
+          ["Thumb", "Our thumb helps us grip things.", "👍"],
+          ["Leg", "Our legs help us walk and run.", "🦵"],
+          ["Foot", "Our feet help us stand and walk.", "🦶"],
+          ["Brain", "Our brain helps us think and learn.", "🧠"]
+        ])
+      }
+    ];
+
+    /* =========================================================
+       3. SOUND ENGINE (Web Audio, no files)
+       ========================================================= */
+    const SOUNDS = {
+      bark:     [{f:250,f2:110,d:.14,type:"sawtooth",gain:.20},{f:240,f2:100,d:.16,t:.22,type:"sawtooth",gain:.20}],
+      meow:     [{f:520,f2:820,d:.20,type:"triangle"},{f:820,f2:460,d:.34,t:.20,type:"triangle"}],
+      moo:      [{f:170,f2:130,d:.75,type:"sawtooth",vib:5,vibDepth:12,gain:.18}],
+      bleat:    [{f:430,f2:380,d:.45,type:"sawtooth",vib:16,vibDepth:40,gain:.14}],
+      baa:      [{f:400,f2:340,d:.55,type:"sawtooth",vib:11,vibDepth:28,gain:.13}],
+      neigh:    [{f:720,f2:300,d:.55,type:"sawtooth",vib:17,vibDepth:55,gain:.16}],
+      heehaw:   [{f:600,f2:420,d:.18,type:"sawtooth"},{f:420,f2:600,d:.18,t:.22,type:"sawtooth"},{f:600,f2:400,d:.20,t:.44,type:"sawtooth"}],
+      squeak:   [{f:1500,f2:2100,d:.09,type:"square",gain:.10},{f:1600,f2:2200,d:.09,t:.14,type:"square",gain:.10}],
+      hiss:     [{f:2400,f2:1600,d:.45,type:"sawtooth",gain:.05}],
+      blub:     [{f:220,f2:150,d:.12,type:"sine",gain:.18},{f:200,f2:140,d:.12,t:.18,type:"sine",gain:.16}],
+      roar:     [{f:170,f2:75,d:.85,type:"sawtooth",vib:7,vibDepth:22,gain:.22}],
+      growl:    [{f:120,f2:90,d:.7,type:"sawtooth",vib:12,vibDepth:16,gain:.20}],
+      trumpet:  [{f:280,f2:520,d:.35,type:"sawtooth",gain:.14},{f:520,f2:360,d:.40,t:.34,type:"sawtooth",gain:.14}],
+      hum:      [{f:150,f2:140,d:.7,type:"sine",vib:5,vibDepth:6,gain:.12}],
+      monkey:   [{f:900,f2:1400,d:.10,type:"square",gain:.10},{f:1100,f2:700,d:.10,t:.13,type:"square",gain:.10},{f:900,f2:1400,d:.10,t:.26,type:"square",gain:.10}],
+      yip:      [{f:900,f2:500,d:.09,type:"sawtooth",gain:.12},{f:950,f2:520,d:.09,t:.14,type:"sawtooth",gain:.12}],
+      snap:     [{f:400,f2:80,d:.07,type:"square",gain:.16},{f:400,f2:80,d:.07,t:.18,type:"square",gain:.14}],
+      grumble:  [{f:110,f2:80,d:.7,type:"sawtooth",vib:9,vibDepth:14,gain:.18}],
+      tweet:    [{f:1900,f2:2700,d:.09,type:"sine",gain:.12},{f:2100,f2:3000,d:.09,t:.13,type:"sine",gain:.12},{f:1800,f2:2500,d:.09,t:.30,type:"sine",gain:.12}],
+      squawk:   [{f:900,f2:400,d:.28,type:"sawtooth",vib:20,vibDepth:90,gain:.14}],
+      peacock:  [{f:700,f2:1200,d:.22,type:"sawtooth",gain:.12},{f:1200,f2:600,d:.45,t:.22,type:"sawtooth",gain:.12}],
+      quack:    [{f:340,f2:200,d:.13,type:"square",gain:.14},{f:340,f2:200,d:.13,t:.20,type:"square",gain:.14}],
+      hoot:     [{f:430,f2:390,d:.22,type:"sine",gain:.16},{f:430,f2:390,d:.26,t:.34,type:"sine",gain:.16}],
+      screech:  [{f:1500,f2:2400,d:.45,type:"sawtooth",vib:22,vibDepth:200,gain:.08}],
+      rooster:  [{f:700,f2:900,d:.16,type:"sawtooth",gain:.12},{f:950,f2:1100,d:.16,t:.20,type:"sawtooth",gain:.12},{f:1000,f2:700,d:.32,t:.42,type:"sawtooth",gain:.12}],
+      honk:     [{f:330,f2:290,d:.22,type:"square",gain:.12},{f:330,f2:290,d:.26,t:.28,type:"square",gain:.12}],
+      buzz:     [{f:210,f2:230,d:.90,type:"sawtooth",vib:26,vibDepth:60,gain:.10}],
+      mosquito: [{f:520,f2:560,d:.90,type:"sawtooth",vib:34,vibDepth:80,gain:.06}],
+      chirp:    [{f:3600,f2:4200,d:.06,type:"sine",gain:.07},{f:3600,f2:4200,d:.06,t:.12,type:"sine",gain:.07},{f:3600,f2:4200,d:.06,t:.24,type:"sine",gain:.07}],
+      flutter:  [{f:620,f2:320,d:.22,type:"sine",gain:.07},{f:700,f2:360,d:.22,t:.28,type:"sine",gain:.07}],
+      chime:    [{f:1200,d:.25,type:"sine",gain:.10},{f:1600,d:.30,t:.14,type:"sine",gain:.08}],
+      engine:   [{f:110,f2:220,d:.50,type:"sawtooth",vib:18,vibDepth:25,gain:.14},{f:200,f2:120,d:.40,t:.45,type:"sawtooth",vib:14,vibDepth:20,gain:.12}],
+      bell:     [{f:2200,d:.15,type:"sine",gain:.10},{f:2200,d:.20,t:.20,type:"sine",gain:.10}],
+      beep:     [{f:700,d:.12,type:"square",gain:.10},{f:700,d:.14,t:.18,type:"square",gain:.10}],
+      train:    [{f:600,f2:800,d:.25,type:"triangle",gain:.12},{f:700,f2:900,d:.35,t:.28,type:"triangle",gain:.12}],
+      whoosh:   [{f:900,f2:200,d:.70,type:"sawtooth",gain:.08}],
+      chop:     [{f:180,f2:150,d:.08,type:"square",gain:.12},{f:180,f2:150,d:.08,t:.14,type:"square",gain:.12},{f:180,f2:150,d:.08,t:.28,type:"square",gain:.12},{f:180,f2:150,d:.08,t:.42,type:"square",gain:.12}],
+      shiphorn: [{f:150,f2:140,d:.90,type:"sawtooth",vib:4,vibDepth:5,gain:.16}],
+      putt:     [{f:150,f2:120,d:.10,type:"square",gain:.12},{f:150,f2:120,d:.10,t:.16,type:"square",gain:.12},{f:150,f2:120,d:.10,t:.32,type:"square",gain:.12}],
+      siren:    [{f:500,f2:900,d:.30,type:"square",gain:.09},{f:900,f2:500,d:.30,t:.30,type:"square",gain:.09},{f:500,f2:900,d:.30,t:.60,type:"square",gain:.09}],
+      /* NEW SOUNDS */
+      oink:     [{f:180,f2:140,d:.12,type:"sawtooth",gain:.20},{f:160,f2:120,d:.14,t:.18,type:"sawtooth",gain:.18}],
+      cluck:    [{f:600,f2:400,d:.08,type:"square",gain:.12},{f:500,f2:350,d:.10,t:.12,type:"square",gain:.12},{f:600,f2:400,d:.08,t:.26,type:"square",gain:.10}],
+      coo:      [{f:400,f2:360,d:.35,type:"sine",vib:6,vibDepth:15,gain:.12},{f:380,f2:340,d:.35,t:.40,type:"sine",vib:6,vibDepth:15,gain:.10}],
+      howl:     [{f:300,f2:600,d:.6,type:"sine",vib:4,vibDepth:8,gain:.14},{f:600,f2:350,d:.7,t:.6,type:"sine",vib:4,vibDepth:8,gain:.12}],
+      bugle:    [{f:400,f2:600,d:.15,type:"sawtooth",gain:.12},{f:600,f2:500,d:.15,t:.18,type:"sawtooth",gain:.12},{f:500,f2:400,d:.2,t:.36,type:"sawtooth",gain:.12}],
+      boing:    [{f:200,f2:600,d:.15,type:"sine",gain:.15},{f:600,f2:300,d:.25,t:.15,type:"sine",gain:.12}],
+      snort:    [{f:120,f2:80,d:.15,type:"sawtooth",gain:.22},{f:100,f2:70,d:.15,t:.2,type:"sawtooth",gain:.18}],
+      purr:     [{f:80,f2:70,d:.9,type:"sawtooth",vib:20,vibDepth:8,gain:.12}],
+      grunt:    [{f:140,f2:100,d:.15,type:"sawtooth",gain:.18},{f:130,f2:90,d:.15,t:.2,type:"sawtooth",gain:.16}],
+      ssss:     [{f:3000,f2:2000,d:.5,type:"sawtooth",gain:.04}],
+      caw:      [{f:800,f2:600,d:.2,type:"sawtooth",gain:.12},{f:750,f2:550,d:.2,t:.28,type:"sawtooth",gain:.12}],
+      peck:     [{f:800,f2:400,d:.05,type:"square",gain:.14},{f:800,f2:400,d:.05,t:.12,type:"square",gain:.14},{f:800,f2:400,d:.05,t:.24,type:"square",gain:.12}],
+      gobble:   [{f:500,f2:700,d:.08,type:"sawtooth",gain:.12},{f:500,f2:700,d:.08,t:.12,type:"sawtooth",gain:.12},{f:500,f2:700,d:.08,t:.24,type:"sawtooth",gain:.12},{f:500,f2:700,d:.08,t:.36,type:"sawtooth",gain:.12}],
+      twinkle:  [{f:2000,d:.12,type:"sine",gain:.10},{f:2400,d:.12,t:.14,type:"sine",gain:.10},{f:2800,d:.12,t:.28,type:"sine",gain:.10},{f:3200,d:.15,t:.42,type:"sine",gain:.10}]
+    };
+
+    let audioCtx = null;
+
+    function ensureAudio() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playNotes(notes) {
+      if (!soundOn || !notes) return;
+      const ctx = ensureAudio();
+      if (!ctx) return;
+
+      const start = ctx.currentTime + 0.02;
+
+      notes.forEach(n => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const t0 = start + (n.t || 0);
+        const dur = n.d || 0.2;
+
+        osc.type = n.type || "sine";
+        osc.frequency.setValueAtTime(Math.max(20, n.f), t0);
+        if (n.f2) osc.frequency.exponentialRampToValueAtTime(Math.max(20, n.f2), t0 + dur);
+
+        if (n.vib) {
+          const lfo = ctx.createOscillator();
+          const lfoGain = ctx.createGain();
+          lfo.frequency.value = n.vib;
+          lfoGain.gain.value = n.vibDepth || 20;
+          lfo.connect(lfoGain).connect(osc.frequency);
+          lfo.start(t0);
+          lfo.stop(t0 + dur + 0.05);
         }
 
-        function openCategory(cat) {
-            activeCategory = cat;
-            homeScreen.style.display = "none";
-            learningScreen.style.display = "block";
-            backBtn.style.display = "inline-block";
-            pageTitle.innerText = cat.title;
+        const peak = n.gain ?? 0.18;
+        gain.gain.setValueAtTime(0.0001, t0);
+        gain.gain.exponentialRampToValueAtTime(peak, t0 + Math.min(0.03, dur / 3));
+        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
 
-            itemsContainer.innerHTML = "";
-            cat.items.forEach((item, index) => {
-                const btn = document.createElement("button");
-                btn.className = "item-btn";
-                if (item.key) btn.id = "key-" + item.key;
-                btn.innerHTML = `
-                    <div class="item-icon">${item.icon}</div>
-                    <div class="item-label">${item.key ? item.key + " - " : ""}${item.name}</div>
-                `;
-                btn.onclick = () => selectItem(item, btn);
-                itemsContainer.appendChild(btn);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t0);
+        osc.stop(t0 + dur + 0.05);
+      });
+    }
 
-                if (index === 0) {
-                    updateSpotlight(item, false);
-                }
-            });
+    /* =========================================================
+       4. SPEECH
+       ========================================================= */
+    let soundOn = true;
+    let speechToken = 0;
 
-            speak(cat.title.split("(")[0]);
+    function speakText(text, onEnd) {
+      if (!("speechSynthesis" in window) || !soundOn || !text) {
+        if (onEnd) onEnd();
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const token = ++speechToken;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 0.86;
+      utterance.pitch = 1.08;
+      utterance.onend = () => {
+        if (token === speechToken && onEnd) onEnd();
+      };
+      window.speechSynthesis.speak(utterance);
+    }
+
+    /* =========================================================
+       5. DOM
+       ========================================================= */
+    const homeView = document.getElementById("homeView");
+    const learnView = document.getElementById("learnView");
+    const categoryGrid = document.getElementById("categoryGrid");
+    const itemGrid = document.getElementById("itemGrid");
+    const homeButton = document.getElementById("homeButton");
+    const soundToggle = document.getElementById("soundToggle");
+    const randomButton = document.getElementById("randomButton");
+    const categoryTitle = document.getElementById("categoryTitle");
+    const spotlight = document.getElementById("spotlight");
+    const spotlightArt = document.getElementById("spotlightArt");
+    const spotlightTag = document.getElementById("spotlightTag");
+    const spotlightName = document.getElementById("spotlightName");
+    const spotlightDetail = document.getElementById("spotlightDetail");
+    const soundButton = document.getElementById("soundButton");
+    const spotlightSoundText = document.getElementById("spotlightSoundText");
+    const itemCount = document.getElementById("itemCount");
+    const totalProgress = document.getElementById("totalProgress");
+
+    let activeCategory = null;
+    let selectedIndex = 0;
+
+    /* =========================================================
+       6. PROGRESS
+       ========================================================= */
+    let progress = {};
+    try {
+      progress = JSON.parse(localStorage.getItem("ll-progress-v2") || "{}") || {};
+    } catch (e) { progress = {}; }
+
+    function saveProgress() {
+      try { localStorage.setItem("ll-progress-v2", JSON.stringify(progress)); } catch (e) {}
+    }
+
+    function markLearned(catId, index) {
+      if (!progress[catId]) progress[catId] = [];
+      if (!progress[catId].includes(index)) {
+        progress[catId].push(index);
+        saveProgress();
+        updateCategoryProgress(catId);
+        updateTotalProgress();
+      }
+      const card = itemGrid.querySelector('[data-index="' + index + '"]');
+      if (card) card.classList.add("learned");
+    }
+
+    function updateCategoryProgress(catId) {
+      const card = categoryGrid.querySelector('[data-category="' + catId + '"]');
+      const cat = categories.find(c => c.id === catId);
+      if (!card || !cat) return;
+
+      const learned = (progress[catId] || []).length;
+      const pct = Math.round((learned / cat.items.length) * 100);
+      const bar = card.querySelector(".category-progress i");
+      const txt = card.querySelector(".category-progress-text");
+
+      if (bar) bar.style.width = pct + "%";
+      if (txt) {
+        txt.textContent = learned
+          ? learned + "/" + cat.items.length + " सीखे ⭐"
+          : cat.items.length + " आइटम";
+      }
+    }
+
+    function updateTotalProgress() {
+      const total = categories.reduce((s, c) => s + c.items.length, 0);
+      const learned = categories.reduce((s, c) => s + (progress[c.id] || []).length, 0);
+      totalProgress.textContent = learned
+        ? "🎯 आपने अब तक " + learned + " / " + total + " चीज़ें सीखीं!"
+        : "🎯 कुल " + total + " चीज़ें सीखने को मिलेंगी!";
+    }
+
+    /* =========================================================
+       7. RENDER
+       ========================================================= */
+    function makeArt(item, className) {
+      if (item.swatch) {
+        return '<span class="' + className + '"><span class="color-dot" style="--swatch:' + item.swatch + '"></span></span>';
+      }
+      return '<span class="' + className + '">' + item.icon + '</span>';
+    }
+
+    function renderCategories() {
+      categoryGrid.innerHTML = categories.map(category => {
+        const learned = (progress[category.id] || []).length;
+        const pct = Math.round((learned / category.items.length) * 100);
+        const g = category.grad;
+
+        return `
+          <button class="category-card" type="button"
+            style="--c1:${g[0]};--c2:${g[1]};--c3:${g[2]}"
+            data-category="${category.id}">
+            <span class="category-icon" aria-hidden="true">${category.icon}</span>
+            <span class="category-name">${category.title}</span>
+            <span class="category-subtitle">${category.subtitle}</span>
+            <span class="category-progress"><i style="width:${pct}%"></i></span>
+            <span class="category-progress-text">
+              ${learned ? learned + "/" + category.items.length + " सीखे ⭐" : category.items.length + " आइटम"}
+            </span>
+          </button>`;
+      }).join("");
+
+      categoryGrid.querySelectorAll("[data-category]").forEach(button => {
+        button.addEventListener("click", () => openCategory(button.dataset.category));
+      });
+    }
+
+    function openCategory(id) {
+      activeCategory = categories.find(category => category.id === id);
+      if (!activeCategory) return;
+
+      selectedIndex = 0;
+      homeView.hidden = true;
+      learnView.hidden = false;
+      homeButton.disabled = false;
+      categoryTitle.textContent = activeCategory.icon + " " + activeCategory.title + " · " + activeCategory.subtitle;
+      itemCount.textContent = activeCategory.items.length + " आइटम";
+      renderItems();
+      selectItem(0, true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderItems() {
+      const learnedList = progress[activeCategory.id] || [];
+      const g = activeCategory.grad || ["#f3f0ff", "#e8e2ff", "#d4c8ff"];
+
+      itemGrid.innerHTML = activeCategory.items.map((item, index) => {
+        const learned = learnedList.includes(index);
+        return `
+          <button class="item-card${learned ? " learned" : ""}" type="button" data-index="${index}"
+            style="--c1:${g[0]}" aria-label="${item.name}">
+            <span class="learned-badge" aria-hidden="true">⭐</span>
+            ${makeArt(item, "item-icon")}
+            <span class="item-label">${item.name}</span>
+            <span class="item-sub">${item.tag}</span>
+          </button>`;
+      }).join("");
+
+      itemGrid.querySelectorAll("[data-index]").forEach(button => {
+        button.addEventListener("click", () => selectItem(Number(button.dataset.index), true));
+      });
+    }
+
+    function selectItem(index, shouldSpeak) {
+      if (!activeCategory || index < 0 || index >= activeCategory.items.length) return;
+
+      selectedIndex = index;
+      const item = activeCategory.items[index];
+
+      spotlightArt.innerHTML = item.swatch
+        ? '<span class="color-dot" style="--swatch:' + item.swatch + '"></span>'
+        : item.icon;
+      spotlightTag.textContent = item.tag;
+      spotlightName.textContent = item.name;
+      spotlightDetail.textContent = item.detail;
+      spotlight.setAttribute("aria-label", "Play pronunciation: " + (item.spoken || item.name));
+
+      if (item.snd) {
+        soundButton.hidden = false;
+        spotlightSoundText.textContent = item.sound || "";
+      } else {
+        soundButton.hidden = true;
+        spotlightSoundText.textContent = "";
+      }
+
+      itemGrid.querySelectorAll(".item-card").forEach((button, buttonIndex) => {
+        const isSelected = buttonIndex === index;
+        button.classList.toggle("selected", isSelected);
+        button.setAttribute("aria-pressed", String(isSelected));
+      });
+
+      spotlight.classList.remove("pop");
+      void spotlight.offsetWidth;
+      spotlight.classList.add("pop");
+
+      if (shouldSpeak) {
+        markLearned(activeCategory.id, index);
+        speakText(item.spoken || item.name, () => {
+          if (item.snd) playNotes(SOUNDS[item.snd]);
+        });
+      }
+    }
+
+    function playCurrentSound() {
+      if (!activeCategory) return;
+      const item = activeCategory.items[selectedIndex];
+      if (!item || !item.snd) return;
+
+      playNotes(SOUNDS[item.snd]);
+      if (item.sound) {
+        setTimeout(() => speakText(item.sound), 550);
+      }
+    }
+
+    function pickRandom() {
+      if (!activeCategory) return;
+      const index = Math.floor(Math.random() * activeCategory.items.length);
+      selectItem(index, true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function goHome() {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      activeCategory = null;
+      learnView.hidden = true;
+      homeView.hidden = false;
+      homeButton.disabled = true;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    /* =========================================================
+       8. EVENTS
+       ========================================================= */
+    homeButton.addEventListener("click", goHome);
+    randomButton.addEventListener("click", pickRandom);
+
+    spotlight.addEventListener("click", event => {
+      if (event.target.closest("#soundButton")) return;
+      if (activeCategory) speakText(activeCategory.items[selectedIndex].spoken || activeCategory.items[selectedIndex].name);
+    });
+
+    spotlight.addEventListener("keydown", event => {
+      if (event.target !== spotlight) return;
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        if (activeCategory) speakText(activeCategory.items[selectedIndex].spoken || activeCategory.items[selectedIndex].name);
+      }
+    });
+
+    soundButton.addEventListener("click", event => {
+      event.stopPropagation();
+      playCurrentSound();
+    });
+
+    soundToggle.addEventListener("click", () => {
+      soundOn = !soundOn;
+      soundToggle.textContent = soundOn ? "🔊" : "🔇";
+      soundToggle.setAttribute("aria-pressed", String(soundOn));
+      if (!soundOn && window.speechSynthesis) window.speechSynthesis.cancel();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (!activeCategory || event.ctrlKey || event.metaKey || event.altKey) return;
+
+      const key = event.key;
+      const lower = key.toLowerCase();
+
+      if (activeCategory.id === "letters" && /^[a-z]$/.test(lower)) {
+        selectItem(lower.charCodeAt(0) - 97, true);
+        return;
+      }
+
+      if (/^[0-9]$/.test(key)) {
+        const number = Number(key);
+        if (number === 0) {
+          if (activeCategory.items.length >= 10) selectItem(9, true);
+        } else {
+          selectItem(number - 1, true);
         }
+        return;
+      }
 
-        function selectItem(item, btnElement) {
-            updateSpotlight(item, true);
-            if (btnElement) {
-                btnElement.classList.add("active");
-                setTimeout(() => btnElement.classList.remove("active"), 200);
-            }
-            playItemSound(item);
-        }
+      if (lower === "s") { event.preventDefault(); playCurrentSound(); return; }
+      if (lower === "r") { event.preventDefault(); pickRandom(); return; }
 
-        function updateSpotlight(item, animate) {
-            lastItem = item;
-            const box = document.getElementById("spotlight-box");
-            document.getElementById("spot-top").innerText = item.key || item.name;
-            document.getElementById("spot-icon").innerText = item.icon;
-            document.getElementById("spot-name").innerText = item.name;
+      if (key === "Escape" || key === "Backspace") {
+        event.preventDefault();
+        goHome();
+      }
+    });
 
-            if (animate) {
-                box.classList.remove("pop");
-                void box.offsetWidth;
-                box.classList.add("pop");
-            }
-        }
-
-        function playItemSound(item) {
-            window.speechSynthesis.cancel();
-            
-            // अगर जानवर की असली आवाज़ का लिंक है, तो उसे बजाएं
-            if (item.audioUrl) {
-                const audio = new Audio(item.audioUrl);
-                audio.play().catch(e => console.log("Audio play blocked"));
-            }
-
-            // साथ में बोलकर भी बताए
-            speak(item.soundText);
-        }
-
-        function repeatAction() {
-            if (lastItem) playItemSound(lastItem);
-        }
-
-        function goHome() {
-            activeCategory = null;
-            learningScreen.style.display = "none";
-            homeScreen.style.display = "grid";
-            backBtn.style.display = "none";
-            pageTitle.innerText = "🦁 बच्चों की जादुई पाठशाला 🎵";
-            window.speechSynthesis.cancel();
-        }
-
-        function speak(text) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US";
-            utterance.rate = 0.85;
-            utterance.pitch = 1.1;
-            window.speechSynthesis.speak(utterance);
-        }
-
-        renderHome();
-    </script>
+    /* =========================================================
+       9. INIT
+       ========================================================= */
+    renderCategories();
+    updateTotalProgress();
+  </script>
 </body>
 </html>
