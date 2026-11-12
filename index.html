@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8e9">
+  <title>Little Learners — Kids Learning App</title>
+  <style>
+    :root {
+      --ink: #25324a;
+      --muted: #748099;
+      --paper: #fffdf8;
+      --bg: #fff8e9;
+      --purple: #7657e8;
+      --shadow: 0 12px 30px rgba(58, 51, 92, 0.11);
+      --round: "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: var(--round);
+      background:
+        radial-gradient(circle at 8% 10%, #ffe9ab 0 5%, transparent 5.3%),
+        radial-gradient(circle at 91% 18%, #dff5ff 0 6%, transparent 6.3%),
+        radial-gradient(circle at 90% 87%, #ffe0ed 0 7%, transparent 7.3%),
+        var(--bg);
+    }
+
+    button { font: inherit; }
+
+    .app {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      padding: 22px 22px 48px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: clamp(1.2rem, 3vw, 1.65rem);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border-radius: 16px;
+      background: #ffe28a;
+      box-shadow: 0 5px 0 #f1c95c;
+      font-size: 1.7rem;
+    }
+
+    .nav-button, .sound-hint {
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 18px;
+      color: white;
+      background: var(--purple);
+      box-shadow: 0 5px 0 #5c41c5;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+
+    .nav-button:hover { transform: translateY(-2px); }
+    .nav-button:active, .sound-hint:active {
+      transform: translateY(3px) scale(.98);
+      box-shadow: 0 2px 0 #5c41c5;
+    }
+
+    .nav-button:disabled {
+      opacity: .48;
+      cursor: default;
+      transform: none;
+    }
+
+    .intro {
+      margin: 16px 0 22px;
+      text-align: center;
+    }
+
+    .intro h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+    }
+
+    .intro p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .category-grid, .item-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 16px;
+    }
+
+    .category-card, .item-card {
+      border: 0;
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .category-card {
+      min-height: 164px;
+      padding: 18px 12px;
+      border-radius: 24px;
+      border-bottom: 5px solid var(--card-color, #e8e4ff);
+      text-align: center;
+    }
+
+    .category-card:hover, .item-card:hover {
+      transform: translateY(-5px) rotate(-1deg);
+      box-shadow: 0 17px 32px rgba(58, 51, 92, .16);
+    }
+
+    .category-icon {
+      display: block;
+      margin-bottom: 11px;
+      font-size: 3rem;
+      line-height: 1.1;
+    }
+
+    .category-name {
+      display: block;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .category-subtitle {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: .79rem;
+      font-weight: 700;
+    }
+
+    .learning-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 26px 0 14px;
+    }
+
+    .learning-heading h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.45rem);
+    }
+
+    .keyboard-hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .spotlight {
+      display: grid;
+      grid-template-columns: minmax(110px, 180px) 1fr;
+      align-items: center;
+      gap: clamp(18px, 5vw, 42px);
+      width: 100%;
+      min-height: 230px;
+      padding: clamp(20px, 5vw, 38px);
+      border: 0;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #fff 0%, #f1edff 100%);
+      box-shadow: var(--shadow);
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .spotlight-art {
+      display: grid;
+      width: clamp(110px, 24vw, 170px);
+      aspect-ratio: 1;
+      place-items: center;
+      border-radius: 32px;
+      background: #fff;
+      box-shadow: inset 0 0 0 3px #eee9ff, 0 8px 18px rgba(62, 49, 112, .09);
+      font-size: clamp(4rem, 12vw, 7rem);
+    }
+
+    .spotlight-art .color-dot {
+      width: 58%;
+      height: 58%;
+      border-radius: 50%;
+      background: var(--swatch);
+      box-shadow: inset -8px -8px 0 rgba(0,0,0,.08);
+    }
+
+    .spotlight-copy small {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 6px 12px;
+      border-radius: 99px;
+      color: #5c41c5;
+      background: #e8e2ff;
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .spotlight-copy h2 {
+      margin: 0 0 5px;
+      font-size: clamp(2rem, 7vw, 3.5rem);
+      line-height: 1;
+    }
+
+    .spotlight-copy p {
+      margin: 9px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.8vw, 1.2rem);
+      font-weight: 700;
+    }
+
+    .spotlight.pop .spotlight-art {
+      animation: pop 420ms cubic-bezier(.2, 1.5, .5, 1);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(.75) rotate(-8deg); }
+      65% { transform: scale(1.12) rotate(4deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    .items-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 30px 2px 13px;
+    }
+
+    .items-title h2 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .items-title span {
+      color: var(--muted);
+      font-size: .87rem;
+      font-weight: 700;
+    }
+
+    .item-grid {
+      grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+      gap: 12px;
+    }
+
+    .item-card {
+      min-height: 120px;
+      padding: 13px 9px;
+      border-radius: 20px;
+      border: 3px solid transparent;
+      text-align: center;
+    }
+
+    .item-card.selected {
+      border-color: var(--purple);
+      background: #f3f0ff;
+    }
+
+    .item-icon {
+      display: grid;
+      height: 55px;
+      place-items: center;
+      margin-bottom: 7px;
+      font-size: 2.45rem;
+    }
+
+    .item-icon .color-dot {
+      width: 39px;
+      height: 39px;
+      border-radius: 50%;
+      background: var(--swatch);
+      box-shadow: inset -5px -5px 0 rgba(0,0,0,.1);
+    }
+
+    .item-label {
+      display: block;
+      font-size: .92rem;
+      font-weight: 900;
+    }
+
+    .item-sub {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    [hidden] { display: none !important; }
+
+    button:focus-visible {
+      outline: 4px solid #ffbd4a;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 560px) {
+      .app { padding: 15px 14px 34px; }
+      .topbar { margin-bottom: 18px; }
+      .brand-mark { width: 42px; height: 42px; }
+      .nav-button { padding: 10px 13px; }
+      .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .category-card { min-height: 145px; }
+      .learning-heading { align-items: start; flex-direction: column; }
+      .keyboard-hint { text-align: left; }
+      .spotlight { grid-template-columns: 96px 1fr; min-height: 165px; gap: 15px; padding: 17px; border-radius: 23px; }
+      .spotlight-art { width: 96px; border-radius: 23px; }
+      .spotlight-copy h2 { font-size: 2rem; }
+      .spotlight-copy p { font-size: .95rem; }
+      .item-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+      .item-card { min-height: 108px; padding: 10px 5px; }
+      .item-label { font-size: .83rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">🌈</span> Little Learners</div>
+      <button id="homeButton" class="nav-button" type="button" disabled>🏠 Home / वापस</button>
+    </header>
+
+    <section id="homeView">
+      <div class="intro">
+        <h1>चलो सीखें! <span aria-hidden="true">✨</span></h1>
+        <p>अपना पसंदीदा विषय चुनें और सीखना शुरू करें।</p>
+      </div>
+      <div id="categoryGrid" class="category-grid" aria-label="Learning categories"></div>
+    </section>
+
+    <section id="learnView" hidden>
+      <div class="learning-heading">
+        <h1 id="categoryTitle"></h1>
+        <p class="keyboard-hint">⌨️ अक्षरों के लिए A–Z और आइटम चुनने के लिए 1–9 दबाएँ</p>
+      </div>
+
+      <button id="spotlight" class="spotlight" type="button" aria-label="Repeat pronunciation">
+        <span id="spotlightArt" class="spotlight-art" aria-hidden="true"></span>
+        <span class="spotlight-copy">
+          <small id="spotlightTag"></small>
+          <h2 id="spotlightName"></h2>
+          <p id="spotlightDetail"></p>
+          <p class="sound-hint">🔊 सुनने के लिए यहाँ टैप करें</p>
+        </span>
+      </button>
+
+      <div class="items-title">
+        <h2>आइए, चुनकर सीखें!</h2>
+        <span id="itemCount"></span>
+      </div>
+      <div id="itemGrid" class="item-grid" aria-label="Items in this category"></div>
+    </section>
+
+    <p class="footer-note">🌟 सीखना मज़ेदार है — हर दिन कुछ नया सीखें! 🌟</p>
+  </main>
+
+  <script>
+    const categories = [
+      {
+        id: "letters", title: "ABCD", subtitle: "अक्षर • Letters", icon: "🔤", color: "#ffd8e4",
+        items: [
+          ["A", "Apple", "A for Apple", "🍎"], ["B", "Ball", "B for Ball", "⚽"],
+          ["C", "Cat", "C for Cat", "🐱"], ["D", "Dog", "D for Dog", "🐶"],
+          ["E", "Elephant", "E for Elephant", "🐘"], ["F", "Fish", "F for Fish", "🐟"],
+          ["G", "Grapes", "G for Grapes", "🍇"], ["H", "Hat", "H for Hat", "🎩"],
+          ["I", "Ice Cream", "I for Ice Cream", "🍦"], ["J", "Juice", "J for Juice", "🧃"],
+          ["K", "Kite", "K for Kite", "🪁"], ["L", "Lion", "L for Lion", "🦁"],
+          ["M", "Moon", "M for Moon", "🌙"], ["N", "Nest", "N for Nest", "🪺"],
+          ["O", "Orange", "O for Orange", "🍊"], ["P", "Penguin", "P for Penguin", "🐧"],
+          ["Q", "Queen", "Q for Queen", "👑"], ["R", "Rabbit", "R for Rabbit", "🐰"],
+          ["S", "Sun", "S for Sun", "☀️"], ["T", "Tiger", "T for Tiger", "🐯"],
+          ["U", "Umbrella", "U for Umbrella", "☂️"], ["V", "Violin", "V for Violin", "🎻"],
+          ["W", "Whale", "W for Whale", "🐳"], ["X", "Xylophone", "X for Xylophone", "🎼"],
+          ["Y", "Yo-yo", "Y for Yo-yo", "🪀"], ["Z", "Zebra", "Z for Zebra", "🦓"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: detail }))
+      },
+      {
+        id: "numbers", title: "123", subtitle: "गिनती • Counting", icon: "🔢", color: "#d8efff",
+        items: [
+          ["1", "One", "1 — One", "☝️"], ["2", "Two", "2 — Two", "✌️"],
+          ["3", "Three", "3 — Three", "🤟"], ["4", "Four", "4 — Four", "🍀"],
+          ["5", "Five", "5 — Five", "🖐️"], ["6", "Six", "6 — Six", "🎲"],
+          ["7", "Seven", "7 — Seven", "🌈"], ["8", "Eight", "8 — Eight", "🐙"],
+          ["9", "Nine", "9 — Nine", "🎈"], ["10", "Ten", "10 — Ten", "🔟"],
+          ["11", "Eleven", "11 — Eleven", "⭐"], ["12", "Twelve", "12 — Twelve", "🥚"],
+          ["13", "Thirteen", "13 — Thirteen", "🦋"], ["14", "Fourteen", "14 — Fourteen", "🌷"],
+          ["15", "Fifteen", "15 — Fifteen", "🍓"], ["16", "Sixteen", "16 — Sixteen", "🎨"],
+          ["17", "Seventeen", "17 — Seventeen", "🐞"], ["18", "Eighteen", "18 — Eighteen", "🌼"],
+          ["19", "Nineteen", "19 — Nineteen", "🧸"], ["20", "Twenty", "20 — Twenty", "🎉"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: detail }))
+      },
+      {
+        id: "pets", title: "Domestic Animals", subtitle: "पालतू जानवर", icon: "🐕", color: "#e5f6d5",
+        items: [
+          ["🐶", "Dog", "A friendly pet that says woof!", "🐶"],
+          ["🐱", "Cat", "A soft pet that says meow!", "🐱"],
+          ["🐮", "Cow", "A farm animal that gives us milk.", "🐮"],
+          ["🐐", "Goat", "A lively animal that likes to nibble.", "🐐"],
+          ["🐑", "Sheep", "A fluffy animal with soft wool.", "🐑"],
+          ["🐴", "Horse", "A strong animal that can run fast.", "🐴"],
+          ["🐰", "Rabbit", "A small animal with long ears.", "🐰"],
+          ["🐹", "Hamster", "A tiny, furry pet.", "🐹"],
+          ["🐢", "Turtle", "A gentle pet with a shell.", "🐢"],
+          ["🐟", "Goldfish", "A little fish that swims in water.", "🐟"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: name + ". " + detail }))
+      },
+      {
+        id: "wild", title: "Wild Animals", subtitle: "जंगली जानवर", icon: "🦁", color: "#ffe2bd",
+        items: [
+          ["🦁", "Lion", "The lion is known as the king of the jungle.", "🦁"],
+          ["🐯", "Tiger", "A big cat with beautiful stripes.", "🐯"],
+          ["🐘", "Elephant", "A huge animal with a long trunk.", "🐘"],
+          ["🦒", "Giraffe", "The tallest animal, with a long neck.", "🦒"],
+          ["🐒", "Monkey", "A playful animal that loves to climb.", "🐒"],
+          ["🦓", "Zebra", "A wild animal with black and white stripes.", "🦓"],
+          ["🐻", "Bear", "A strong, furry animal.", "🐻"],
+          ["🦊", "Fox", "A clever animal with a bushy tail.", "🦊"],
+          ["🐊", "Crocodile", "A reptile that lives near water.", "🐊"],
+          ["🦛", "Hippopotamus", "A large animal that likes the water.", "🦛"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: name + ". " + detail }))
+      },
+      {
+        id: "birds", title: "Birds", subtitle: "पक्षी", icon: "🐦", color: "#d9edff",
+        items: [
+          ["🐦", "Bird", "Birds have feathers and wings.", "🐦"],
+          ["🦜", "Parrot", "A colorful bird that can copy sounds.", "🦜"],
+          ["🦚", "Peacock", "A beautiful bird with a colorful tail.", "🦚"],
+          ["🦆", "Duck", "A bird that likes to swim.", "🦆"],
+          ["🦉", "Owl", "An owl can see very well at night.", "🦉"],
+          ["🦅", "Eagle", "A strong bird that soars high in the sky.", "🦅"],
+          ["🐓", "Rooster", "A rooster wakes up early and crows.", "🐓"],
+          ["🦢", "Swan", "A graceful bird that swims on lakes.", "🦢"],
+          ["🐧", "Penguin", "A bird that swims but cannot fly.", "🐧"],
+          ["🦩", "Flamingo", "A tall, pink bird that stands on one leg.", "🦩"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: name + ". " + detail }))
+      },
+      {
+        id: "fruits", title: "Fruits", subtitle: "फल", icon: "🍓", color: "#ffd9dc",
+        items: [
+          ["🍎", "Apple", "A crunchy red or green fruit.", "🍎"],
+          ["🍌", "Banana", "A soft, sweet fruit with a yellow peel.", "🍌"],
+          ["🍊", "Orange", "A juicy fruit full of vitamin C.", "🍊"],
+          ["🍇", "Grapes", "Small, sweet fruits that grow in bunches.", "🍇"],
+          ["🍓", "Strawberry", "A sweet red fruit with tiny seeds.", "🍓"],
+          ["🍉", "Watermelon", "A big, juicy fruit with a green rind.", "🍉"],
+          ["🍍", "Pineapple", "A tropical fruit with a spiky top.", "🍍"],
+          ["🥭", "Mango", "A sweet tropical fruit, often called the king of fruits.", "🥭"],
+          ["🍐", "Pear", "A juicy fruit that is narrow at the top.", "🍐"],
+          ["🍒", "Cherries", "Small red fruits that grow in pairs.", "🍒"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: name + ". " + detail }))
+      },
+      {
+        id: "vegetables", title: "Vegetables", subtitle: "सब्ज़ियाँ", icon: "🥕", color: "#dcf3d9",
+        items: [
+          ["🥕", "Carrot", "A crunchy orange vegetable.", "🥕"],
+          ["🥦", "Broccoli", "A green vegetable that looks like a tiny tree.", "🥦"],
+          ["🍅", "Tomato", "A juicy red fruit often used as a vegetable.", "🍅"],
+          ["🥔", "Potato", "A vegetable that grows underground.", "🥔"],
+          ["🌽", "Corn", "A yellow vegetable with kernels.", "🌽"],
+          ["🥒", "Cucumber", "A cool, crunchy green vegetable.", "🥒"],
+          ["🧅", "Onion", "A vegetable that can make you cry.", "🧅"],
+          ["🫑", "Bell Pepper", "A crunchy vegetable that can be many colors.", "🫑"],
+          ["🍆", "Eggplant", "A purple vegetable with a green top.", "🍆"],
+          ["🧄", "Garlic", "A tasty vegetable used to flavor food.", "🧄"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: name + ". " + detail }))
+      },
+      {
+        id: "vehicles", title: "Vehicles", subtitle: "वाहन", icon: "🚗", color: "#e5ddff",
+        items: [
+          ["🚗", "Car", "A car takes people from place to place.", "🚗"],
+          ["🚌", "Bus", "A bus carries many people.", "🚌"],
+          ["🚲", "Bicycle", "A bicycle has two wheels and pedals.", "🚲"],
+          ["🚂", "Train", "A train travels on railway tracks.", "🚂"],
+          ["✈️", "Airplane", "An airplane flies high in the sky.", "✈️"],
+          ["🚁", "Helicopter", "A helicopter can fly straight up.", "🚁"],
+          ["🚢", "Ship", "A ship carries people or goods across water.", "🚢"],
+          ["🚕", "Taxi", "A taxi takes passengers where they want to go.", "🚕"],
+          ["🚜", "Tractor", "A tractor helps farmers on the farm.", "🚜"],
+          ["🚒", "Fire Engine", "A fire engine helps put out fires.", "🚒"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: name + ". " + detail }))
+      },
+      {
+        id: "colors", title: "Colors", subtitle: "रंग", icon: "🎨", color: "#ffedb5",
+        items: [
+          ["🔴", "Red", "Red is the color of a ripe strawberry.", "🔴", "#ef4444"],
+          ["🟠", "Orange", "Orange is the color of a juicy orange.", "🟠", "#f97316"],
+          ["🟡", "Yellow", "Yellow is the color of the bright sun.", "🟡", "#facc15"],
+          ["🟢", "Green", "Green is the color of fresh grass.", "🟢", "#22c55e"],
+          ["🔵", "Blue", "Blue is the color of the sky.", "🔵", "#3b82f6"],
+          ["🟣", "Purple", "Purple is the color of pretty grapes.", "🟣", "#8b5cf6"],
+          ["🩷", "Pink", "Pink is a soft, cheerful color.", "🩷", "#ec4899"],
+          ["🤎", "Brown", "Brown is the color of a tree trunk.", "🤎", "#92400e"],
+          ["⚫", "Black", "Black is the color of the night sky.", "⚫", "#1f2937"],
+          ["⚪", "White", "White is the color of a fluffy cloud.", "⚪", "#ffffff"]
+        ].map(([tag, name, detail, icon, swatch]) => ({ tag, name, detail, icon, swatch, spoken: name + ". " + detail }))
+      },
+      {
+        id: "body", title: "Body Parts", subtitle: "शरीर के अंग", icon: "🖐️", color: "#ffe0c2",
+        items: [
+          ["👀", "Eyes", "We use our eyes to see.", "👀"],
+          ["👂", "Ears", "We use our ears to hear.", "👂"],
+          ["👃", "Nose", "We use our nose to smell.", "👃"],
+          ["👄", "Mouth", "We use our mouth to talk and eat.", "👄"],
+          ["🦷", "Teeth", "Our teeth help us chew food.", "🦷"],
+          ["🖐️", "Hand", "We use our hands to hold things.", "🖐️"],
+          ["👍", "Thumb", "Our thumb helps us grip things.", "👍"],
+          ["🦵", "Leg", "Our legs help us walk and run.", "🦵"],
+          ["🦶", "Foot", "Our feet help us stand and walk.", "🦶"],
+          ["🧠", "Brain", "Our brain helps us think and learn.", "🧠"]
+        ].map(([tag, name, detail, icon]) => ({ tag, name, detail, icon, spoken: name + ". " + detail }))
+      }
+    ];
+
+    const homeView = document.getElementById("homeView");
+    const learnView = document.getElementById("learnView");
+    const categoryGrid = document.getElementById("categoryGrid");
+    const itemGrid = document.getElementById("itemGrid");
+    const homeButton = document.getElementById("homeButton");
+    const categoryTitle = document.getElementById("categoryTitle");
+    const spotlight = document.getElementById("spotlight");
+    const spotlightArt = document.getElementById("spotlightArt");
+    const spotlightTag = document.getElementById("spotlightTag");
+    const spotlightName = document.getElementById("spotlightName");
+    const spotlightDetail = document.getElementById("spotlightDetail");
+    const itemCount = document.getElementById("itemCount");
+
+    let activeCategory = null;
+    let selectedIndex = 0;
+
+    function speak(item) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(item.spoken || item.name);
+      utterance.lang = "en-US";
+      utterance.rate = 0.86;
+      utterance.pitch = 1.08;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function makeArt(item, className) {
+      if (item.swatch) {
+        return `<span class="${className}"><span class="color-dot" style="--swatch:${item.swatch}"></span></span>`;
+      }
+      return `<span class="${className}">${item.icon}</span>`;
+    }
+
+    function renderCategories() {
+      categoryGrid.innerHTML = categories.map(category => `
+        <button class="category-card" type="button"
+          style="--card-color:${category.color}" data-category="${category.id}">
+          <span class="category-icon" aria-hidden="true">${category.icon}</span>
+          <span class="category-name">${category.title}</span>
+          <span class="category-subtitle">${category.subtitle}</span>
+        </button>
+      `).join("");
+
+      categoryGrid.querySelectorAll("[data-category]").forEach(button => {
+        button.addEventListener("click", () => openCategory(button.dataset.category));
+      });
+    }
+
+    function openCategory(id) {
+      activeCategory = categories.find(category => category.id === id);
+      if (!activeCategory) return;
+
+      selectedIndex = 0;
+      homeView.hidden = true;
+      learnView.hidden = false;
+      homeButton.disabled = false;
+      categoryTitle.textContent = `${activeCategory.icon} ${activeCategory.title} · ${activeCategory.subtitle}`;
+      itemCount.textContent = `${activeCategory.items.length} आइटम`;
+      renderItems();
+      selectItem(0, true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderItems() {
+      itemGrid.innerHTML = activeCategory.items.map((item, index) => `
+        <button class="item-card" type="button" data-index="${index}"
+          aria-label="${item.tag}, ${item.name}">
+          ${makeArt(item, "item-icon")}
+          <span class="item-label">${item.name}</span>
+          <span class="item-sub">${item.tag}</span>
+        </button>
+      `).join("");
+
+      itemGrid.querySelectorAll("[data-index]").forEach(button => {
+        button.addEventListener("click", () => selectItem(Number(button.dataset.index), true));
+      });
+    }
+
+    function selectItem(index, shouldSpeak) {
+      if (!activeCategory || index < 0 || index >= activeCategory.items.length) return;
+
+      selectedIndex = index;
+      const item = activeCategory.items[index];
+
+      spotlightArt.innerHTML = item.swatch
+        ? `<span class="color-dot" style="--swatch:${item.swatch}"></span>`
+        : item.icon;
+      spotlightTag.textContent = item.tag;
+      spotlightName.textContent = item.name;
+      spotlightDetail.textContent = item.detail;
+      spotlight.setAttribute("aria-label", `Play pronunciation: ${item.spoken || item.name}`);
+
+      itemGrid.querySelectorAll(".item-card").forEach((button, buttonIndex) => {
+        const isSelected = buttonIndex === index;
+        button.classList.toggle("selected", isSelected);
+        button.setAttribute("aria-pressed", String(isSelected));
+      });
+
+      spotlight.classList.remove("pop");
+      void spotlight.offsetWidth;
+      spotlight.classList.add("pop");
+
+      if (shouldSpeak) speak(item);
+    }
+
+    function goHome() {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      activeCategory = null;
+      learnView.hidden = true;
+      homeView.hidden = false;
+      homeButton.disabled = true;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    homeButton.addEventListener("click", goHome);
+    spotlight.addEventListener("click", () => {
+      if (activeCategory) speak(activeCategory.items[selectedIndex]);
+    });
+
+    document.addEventListener("keydown", event => {
+      if (!activeCategory || event.ctrlKey || event.metaKey || event.altKey) return;
+
+      const key = event.key.toLowerCase();
+      if (activeCategory.id === "letters" && /^[a-z]$/.test(key)) {
+        const letterIndex = key.charCodeAt(0) - 97;
+        selectItem(letterIndex, true);
+        return;
+      }
+
+      if (/^[0-9]$/.test(key)) {
+        const number = Number(key);
+        if (number === 0) {
+          if (activeCategory.items.length >= 10) selectItem(9, true);
+        } else {
+          selectItem(number - 1, true);
+        }
+      }
+
+      if (event.key === "Escape" || event.key === "Backspace") {
+        event.preventDefault();
+        goHome();
+      }
+    });
+
+    renderCategories();
+  </script>
+</body>
+</html>
